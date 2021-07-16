@@ -133,7 +133,7 @@ router.post('/courses', authenticateUser, asyncHelper(async(req, res) => {
 //PUT updates a course and returns no content
 router.put('/courses/:id', authenticateUser, asyncHelper(async(req, res) => {
     try {
-        const course = await Courses.findByPk(req.params.id);
+        const course = await Course.findByPk(req.params.id);
         if (course) {
           await course.update(req.body);
           res.status(204).end();
@@ -151,8 +151,7 @@ router.put('/courses/:id', authenticateUser, asyncHelper(async(req, res) => {
           throw error;
         }
       }
-    })
-  );
+    }));
 
 //DELETE deletes a course and returns no content
 router.delete('/courses/:id', authenticateUser, asyncHelper(async(req, res) => {

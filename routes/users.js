@@ -101,7 +101,7 @@ router.post('/users', asyncHelper(async(req, res) => {
         } else if (error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);
             console.log('Errors: ', errors);
-            res.status(401).json(errors);
+            res.status(400).json(errors);
         } else {
             throw error;
         }
