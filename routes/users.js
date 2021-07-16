@@ -94,7 +94,7 @@ router.post('/users', asyncHelper(async(req, res) => {
             const errors = error.errors.map(err => err.message);
             console.log('Errors: ', errors);
             if (errors[0] === 'Please enter a valid email address.') {
-                res.status(401).json(errors);
+                res.status(400).json(errors);
             } else {
                 res.status(400).json(errors);
             }

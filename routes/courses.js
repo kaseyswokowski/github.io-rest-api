@@ -132,31 +132,27 @@ router.post('/courses', authenticateUser, asyncHelper(async(req, res) => {
 
 //PUT updates a course and returns no content
 router.put('/courses/:id', authenticateUser, asyncHelper(async(req, res) => {
-    const course = await Course.findByPk(req.params.id);
-
-    //wrapping everything in an if to check and make sure title and desc exist in request.
-    if (req.body.title && req.body.description) {
-        //comparing the current user ID with the user owner of the course's id.
-        if (req.currentUser.id === course.userId) {
-            try {
-                await course.update(req.body);
-                res.status(204).end();
-            } catch (error) {
-                if (error.name === 'SequelizeValidationError') {
-                    const errors = error.errors.map(err => err.message);
-                    res.status(400).json(errors);
-                } else {
-                    throw error;
-                }
-            }
+    try {
+        const course = await Courses.findByPk(req.params.id);
+        if (course) {
+          await course.update(req.body);
+          res.status(204).end();
         } else {
-            //if it does not match, access denied
-            res.status(403).json('Access Denied. This user does not own this course.');
+          res.status(404).end();
         }
-    } else {
-        res.status(400).json('Title & Description are required.');
-    }
-}));
+      } catch (error) {
+        if (
+          error.name === 'SequelizeValidationError' ||
+          error.name === 'SequelizeUniqueConstraintError'
+        ) {
+          const errors = error.errors.map((err) => err.message);
+          res.status(400).json({ errors });
+        } else {
+          throw error;
+        }
+      }
+    })
+  );
 
 //DELETE deletes a course and returns no content
 router.delete('/courses/:id', authenticateUser, asyncHelper(async(req, res) => {
